@@ -1,37 +1,18 @@
 import {faker} from '@faker-js/faker'
-import {createHash} from '../utils/index'
+import {createHash} from '../utils/index.js'
 class MockingService {
-
-
-async generateMockingUser(num) {
-
-    
-
-}
-
-
-async generateMockingPets(num) {
-
-    const pets = []; 
-
-
-    for (let i = 0; i <num; i++) {
+    static async generateMockingPets(num) { // Cambiado a estático
+        const pets = [];
+        for (let i = 0; i < num; i++) {
+            pets.push({
+                name: faker.animal.dog(),
+                specie: faker.animal.type(),
+                adopted: false
+            });
+        }
         
-        
-        pets.push({
-            name:AnimalModule.dog(),
-            specie:faker.animal.type(),
-            adopted:false
-        })
-        
+        return pets;
     }
-
-    return pets;
-
-
-}
-
-
 }
 
 export default MockingService;
