@@ -7,7 +7,7 @@ import adoptionsRouter from './routes/adoption.router.js';
 import sessionsRouter from './routes/sessions.router.js';
 import mongoose from "mongoose";
 const app = express();
-const PORT = 8082;
+const PORT = 8080;
 
 
 app.use(express.json());
