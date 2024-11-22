@@ -27,21 +27,37 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).send({ status: "error", error: "Incomplete values" });
+    
     const user = await usersService.getUserByEmail(email);
-    if(!user) return res.status(404).send({status:"error",error:"User doesn't exist"});
-    const isValidPassword = await passwordValidation(user,password);
-    if(!isValidPassword) return res.status(400).send({status:"error",error:"Incorrect password"});
+    if (!user) return res.status(404).send({ status: "error", error: "User doesn't exist" });
+    
+    const isValidPassword = await passwordValidation(user, password);
+    if (!isValidPassword) return res.status(400).send({ status: "error", error: "Incorrect password" });
+    
     const userDto = UserDTO.getUserTokenFrom(user);
-    const token = jwt.sign(userDto,'tokenSecretJWT',{expiresIn:"1h"});
-    res.cookie('coderCookie',token,{maxAge:3600000}).send({status:"success",message:"Logged in"})
+    const token = jwt.sign(userDto, 'tokenSecretJWT', { expiresIn: "1h" });
+    
+    res.cookie('coderCookie', token, { maxAge: 3600000 });
+    res.send({ status: "success", message: "Logged in", payload: userDto });  
 }
 
-const current = async(req,res) =>{
-    const cookie = req.cookies['coderCookie']
-    const user = jwt.verify(cookie,'tokenSecretJWT');
-    if(user)
-        return res.send({status:"success",payload:user})
+
+const current = async (req, res) => {
+    const cookie = req.cookies['coderCookie'];
+    if (!cookie) return res.status(401).send({ status: "error", error: "No token provided" });
+
+    try {
+        const user = jwt.verify(cookie, 'tokenSecretJWT');
+        if (user) {
+            return res.send({ status: "success", payload: user });
+        } else {
+            return res.status(401).send({ status: "error", error: "Invalid token" });
+        }
+    } catch (error) {
+        return res.status(401).send({ status: "error", error: "Token verification failed" });
+    }
 }
+
 
 const unprotectedLogin  = async(req,res) =>{
     const { email, password } = req.body;

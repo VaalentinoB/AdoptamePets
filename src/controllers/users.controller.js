@@ -1,5 +1,17 @@
 import { usersService } from "../services/index.js"
 
+//Modificacion en clase: 
+
+const createUser = async (req, res) => {
+    try {
+        const nuevoUsuario = req.body; 
+        await usersService.create(nuevoUsuario); 
+        res.status(201).send({status:"success", payload: nuevoUsuario});
+    } catch (error) {
+        res.status(500).send("Error fatal")
+    }
+}
+
 const getAllUsers = async(req,res)=>{
     const users = await usersService.getAll();
     res.send({status:"success",payload:users})
@@ -10,17 +22,6 @@ const getUser = async(req,res)=> {
     const user = await usersService.getUserById(userId);
     if(!user) return res.status(404).send({status:"error",error:"User not found"})
     res.send({status:"success",payload:user})
-}
-
-const createUser = async (req, res) => {
-    try {
-        const nuevoUsuario = req.body;
-        await usersService.create(nuevoUsuario);
-        res.status(201).send({ status: "success", payload: nuevoUsuario });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({ status: "error", error: error.message });
-    }
 }
 
 const updateUser =async(req,res)=>{
@@ -42,6 +43,6 @@ export default {
     deleteUser,
     getAllUsers,
     getUser,
-    updateUser, 
+    updateUser,
     createUser
 }
