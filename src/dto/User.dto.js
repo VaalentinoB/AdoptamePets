@@ -1,9 +1,11 @@
-export default class UserDTO {
-    static getUserTokenFrom = (user) =>{
+class UserDTO {
+    static getUserTokenFrom(user) {
         return {
-            name: `${user.first_name} ${user.last_name}`,
+            id: user._id,
+            email: user.email,
             role: user.role,
-            email:user.email
-        }
+        };
     }
 }
+
+export default UserDTO;
