@@ -6,10 +6,17 @@ import petsRouter from './routes/pets.router.js';
 import adoptionsRouter from './routes/adoption.router.js';
 import sessionsRouter from './routes/sessions.router.js';
 import mongoose from "mongoose";
+import dotenv from 'dotenv';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 const app = express();
-const PORT = 8080;
+
+
+dotenv.config();
+
+
+const PORT = process.env.PORT || 8080;
+const DB_URI = process.env.DB_URI;
 
 
 
@@ -21,7 +28,7 @@ app.use('/api/pets',petsRouter);
 app.use('/api/adoptions',adoptionsRouter);
 app.use('/api/sessions',sessionsRouter);
 app.use("/api/mocks", mocksRouter);
-app.listen(PORT,()=>console.log(`Listening on ${PORT}`))
+app.listen(PORT,()=>console.log(`Escuchando en  ${PORT}`))
 
 const swaggerOptions = { 
     definition: {
