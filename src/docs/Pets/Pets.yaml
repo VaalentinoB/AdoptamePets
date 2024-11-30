@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:3000/api/pets
 paths:
-  /:
+  /api/pets:
     get:
       summary: Obtiene todas las mascotas
       tags:
@@ -72,7 +72,7 @@ paths:
                         type: string
                       birthDate:
                         type: string
-  /withimage:
+  /api/pets/withimage:
     post:
       summary: Crea una nueva mascota con imagen
       tags:
@@ -116,7 +116,7 @@ paths:
                         type: string
                       image:
                         type: string
-  /{pid}:
+  /api/pets/{pid}:
     put:
       summary: Actualiza una mascota por ID
       tags:

@@ -1,141 +1,194 @@
 paths:
-  /api/users:
+  /api/pets:
     get:
-      summary: Obtener todos los usuarios de la base de datos
+      summary: Obtener todas las mascotas
       tags:
-        - Users
-      responses: 
+        - Pets
+      responses:
         "200":
-          description: Lista de usuarios obtenida con éxito
+          description: Lista de mascotas obtenida con éxito
           content:
             application/json:
-              schema: 
-                type: array
-                items: 
-                  $ref: "#components/schemas/user"
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Pet"
         "500":
           description: Error interno del servidor
     post:
-      summary: Crear un nuevo usuario
+      summary: Crear una nueva mascota
       tags:
-        - Users
+        - Pets
       requestBody:
         required: true
         content:
           application/json:
-            schema: 
-              $ref: "#components/requestBodies/createUser"
-      responses: 
+            schema:
+              $ref: "#/components/requestBodies/createPet"
+      responses:
         "201":
-          description: Usuario creado exitosamente
-        "500": 
+          description: Mascota creada exitosamente
+        "400":
+          description: Valores incompletos en la solicitud
+        "500":
           description: Error interno del servidor
-  /api/users/{uid}:
-    get:
-      summary: Obtener un usuario por ID
-      tags: 
-        - Users
+  /api/pets/withimage:
+    post:
+      summary: Crear una mascota con imagen
+      tags:
+        - Pets
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/requestBodies/createPetWithImage"
+      responses:
+        "201":
+          description: Mascota con imagen creada exitosamente
+        "400":
+          description: Valores incompletos en la solicitud
+        "500":
+          description: Error interno del servidor
+  /api/pets/{pid}:
+    put:
+      summary: Actualizar una mascota por ID
+      tags:
+        - Pets
       parameters:
-      - name: uid
+      - name: pid
         in: path
         required: true
-        description: ID del usuario a buscar
-        schema: 
-          type: string
-      responses: 
-        "200":
-          description: Usuario encontrado exitosamente
-          content:
-            application/json:
-              schema: 
-                $ref: "#components/schemas/user"
-        "500": 
-          description: Error interno del servidor
-    put: 
-      summary: Actualizar un usuario por ID
-      tags: 
-        - Users
-      parameters: 
-      - name: uid
-        in: path
-        required: true
-        description: ID del usuario a actualizar
-        schema: 
+        description: ID de la mascota a actualizar
+        schema:
           type: string
       requestBody:
         required: true
         content:
           application/json:
-            schema: 
-              $ref: "#components/requestBodies/updateUser"
+            schema:
+              $ref: "#/components/requestBodies/updatePet"
       responses:
         "200":
-          description: Usuario actualizado exitosamente
-        "404": 
-          description: Usuario no encontrado
-        "500": 
+          description: Mascota actualizada exitosamente
+        "404":
+          description: Mascota no encontrada
+        "500":
+          description: Error interno del servidor
+    delete:
+      summary: Eliminar una mascota por ID
+      tags:
+        - Pets
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: ID de la mascota a eliminar
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Mascota eliminada exitosamente
+        "404":
+          description: Mascota no encontrada
+        "500":
           description: Error interno del servidor
 
-components: 
+components:
   schemas:
-    User:
+    Pet:
       type: object
       properties:
-        _id: 
+        name:
           type: string
-          description: ID autogenerado por MongoDB
-        first_name: 
+          description: Nombre de la mascota
+        specie:
           type: string
-          description: Nombre del usuario
-        last_name: 
+          description: Especie de la mascota
+        birthDate:
           type: string
-          description: Apellido del usuario
-        password: 
+          format: date
+          description: Fecha de nacimiento de la mascota
+        adopted:
+          type: boolean
+          description: Indica si la mascota fue adoptada
+        owner:
           type: string
-          description: Contraseña del usuario
+          description: ID del propietario de la mascota
+        image:
+          type: string
+          description: Ruta de la imagen de la mascota
       example:
-        _id: ObjectId("123456")
-        first_name: Juan
-        last_name: Pérez
-        password: password123
+        name: Buddy
+        specie: Dog
+        birthDate: "2020-01-01"
+        adopted: false
+        owner: "648a1e2395b1f22e1c8b4567"
+        image: /public/img/buddy.png
   requestBodies:
-    createUser: 
+    createPet:
       type: object
       properties:
-        first_name: 
+        name:
           type: string
-          description: Nombre del usuario
-        last_name: 
+          description: Nombre de la mascota
+        specie:
           type: string
-          description: Apellido del usuario
-        password: 
+          description: Especie de la mascota
+        birthDate:
           type: string
-          description: Contraseña del usuario
-        email: 
-          type: string
-          description: Correo electrónico del usuario
+          format: date
+          description: Fecha de nacimiento de la mascota
       example:
-        first_name: Ana
-        last_name: López
-        password: securePass2024
-        email: ana.lopez@example.com
-    updateUser:
+        name: Luna
+        specie: Cat
+        birthDate: "2019-05-12"
+    createPetWithImage:
       type: object
       properties:
-        first_name: 
+        name:
           type: string
-          description: Nombre del usuario
-        last_name: 
+          description: Nombre de la mascota
+        specie:
           type: string
-          description: Apellido del usuario
-        password: 
+          description: Especie de la mascota
+        birthDate:
           type: string
-          description: Contraseña del usuario
-        email: 
+          format: date
+          description: Fecha de nacimiento de la mascota
+        image:
           type: string
-          description: Correo electrónico del usuario
+          format: binary
+          description: Imagen de la mascota
       example:
-        first_name: Carlos
-        last_name: Ramírez
-        password: updatedPass2024
-        email: carlos.ramirez@example.com
+        name: Rex
+        specie: Dog
+        birthDate: "2022-03-01"
+        image: binary
+    updatePet:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre de la mascota
+        specie:
+          type: string
+          description: Especie de la mascota
+        birthDate:
+          type: string
+          format: date
+          description: Fecha de nacimiento de la mascota
+        adopted:
+          type: boolean
+          description: Indica si la mascota fue adoptada
+      example:
+        name: Rocky
+        specie: Dog
+        birthDate: "2021-07-04"
+        adopted: true
